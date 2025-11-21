@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grimora - Quick Test</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0d0d0d;
+      color: #e0e0e0;
+      font-family: sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    
+    #test-container {
+      text-align: center;
+    }
+    
+    canvas {
+      border: 1px solid #00d9ff;
+      border-radius: 8px;
+    }
+    
+    h1 {
+      color: #00d9ff;
+      text-shadow: 0 0 10px #00d9ff;
+    }
+  </style>
+</head>
+<body>
+  <div id="test-container">
+    <h1>THREE.js Sigil Test</h1>
+    <div id="three-test"></div>
+  </div>
+  
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+    import { SigilFactory } from './JS/three/sigils/sigilFactory.js';
+    
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, 400 / 400, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    
+    renderer.setSize(400, 400);
+    document.getElementById('three-test').appendChild(renderer.domElement);
+    
+    // Add lighting
+    const light = new THREE.PointLight(0x00d9ff, 1, 100);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+    
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
+    
+    // Create test sigils
+    const mathSigil = SigilFactory.createSigil('math', { size: 1, animated: true });
+    mathSigil.position.x = -1.5;
+    scene.add(mathSigil);
+    
+    const chemSigil = SigilFactory.createSigil('chem', { size: 1, animated: true });
+    chemSigil.position.x = 1.5;
+    scene.add(chemSigil);
+    
+    camera.position.z = 5;
+    
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      if (mathSigil.userData.animate) {
+        mathSigil.userData.animate(0.016);
+      }
+      
+      if (chemSigil.userData.animate) {
+        chemSigil.userData.animate(0.016);
+      }
+      
+      renderer.render(scene, camera);
+    }
+    
+    animate();
+    
+    console.log('✅ THREE.js test loaded successfully!');
+  </script>
+</body>
+</html>

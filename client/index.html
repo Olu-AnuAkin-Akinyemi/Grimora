@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Grimora - A living spellbook companion for KemKnightRanger Academy">
+  <meta name="theme-color" content="#0d0d0d">
+  
+  <!-- Apple-specific -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <title>Grimora | KemKnightRanger Academy</title>
+  
+  <!-- Import map for THREE.js -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="CSS/reset.css">
+  <link rel="stylesheet" href="CSS/tokens.css">
+  <link rel="stylesheet" href="CSS/layout.css">
+  <link rel="stylesheet" href="CSS/components.css">
+</head>
+<body>
+  <!-- THREE.js canvas container (fullscreen background) -->
+  <div id="three-container" aria-hidden="true"></div>
+  
+  <!-- Main app container -->
+  <div id="app" role="main">
+    
+    <!-- Cover State: First screen (closed book) -->
+    <section id="cover-view" class="view-state active" data-view="cover">
+      <div class="cover-content">
+        <div class="grimora-emblem" aria-label="Grimora emblem">
+          <div class="emblem-glow"></div>
+        </div>
+        
+        <h1 class="grimora-title">
+          <span class="title-main">GRIMORA</span>
+          <span class="title-tagline">A living spellbook, as your companion</span>
+        </h1>
+        
+        <button id="open-grimora-btn" class="btn-primary btn-glow">
+          Open Grimora
+        </button>
+        
+        <button id="sign-in-btn" class="btn-secondary btn-ghost">
+          <span class="btn-icon">👤</span>
+          Sign In / Sign Up
+        </button>
+        
+        <div class="cover-footer">
+          <span class="footer-text">KemKnightRanger Academy</span>
+          <span class="footer-divider">·</span>
+          <span class="footer-rank">Rank: Initiate</span>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Main View: Background sigil with book spine button -->
+    <section id="main-view" class="view-state" data-view="main">
+      <!-- THREE.js background sigil renders here -->
+      
+      <!-- Book spine button (fixed to right edge) -->
+      <button id="book-spine-btn" class="book-spine-btn" aria-label="Open Halls Menu">
+        <div class="spine-icon">
+          <span class="spine-line"></span>
+          <span class="spine-line"></span>
+          <span class="spine-line"></span>
+        </div>
+      </button>
+    </section>
+    
+    <!-- Side Panel: Halls menu (slides from right) -->
+    <aside id="side-panel" class="side-panel" data-state="closed">
+      <div class="side-panel-overlay"></div>
+      <div class="side-panel-content">
+        <header class="panel-header">
+          <h2 class="panel-title">The Four Halls</h2>
+        </header>
+        
+        <!-- THREE.js renders 4 hall sigils here in this container -->
+        <div id="panel-sigils-container" class="panel-sigils-container">
+          <canvas id="panel-sigils-canvas"></canvas>
+        </div>
+        
+        <!-- Tooltip for hover -->
+        <div id="hall-tooltip" class="hall-tooltip hidden">
+          <h3 class="tooltip-title"></h3>
+          <p class="tooltip-subtitle"></p>
+          <div class="tooltip-paths"></div>
+          <button class="tooltip-enter-btn">Enter →</button>
+        </div>
+      </div>
+    </aside>
+    
+  </div>
+  
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="modal" role="dialog" aria-labelledby="auth-modal-title" aria-hidden="true">
+    <div class="modal-overlay" aria-hidden="true"></div>
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Close">×</button>
+      <h2 id="auth-modal-title" class="modal-title">Sign In to Save Progress</h2>
+      <p class="modal-description">
+        Connect your account to preserve your journey through Grimora.
+      </p>
+      
+      <div class="auth-options">
+        <button class="auth-btn auth-btn-discord">
+          <span class="auth-icon">🎮</span>
+          Continue with Discord
+        </button>
+        <button class="auth-btn auth-btn-google">
+          <span class="auth-icon">G</span>
+          Continue with Google
+        </button>
+      </div>
+      
+      <p class="auth-footer">
+        Your progress is stored locally by default. Sign in to sync across devices.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Main JS (ES6 modules) -->
+  <script type="module" src="JS/main.js"></script>
+  
+  <!-- Debug script to test tooltip manually -->
+  <script>
+    // Test that new changes are being loaded
+    console.log('🔮 Index.html loaded at:', new Date().toISOString());
+    
+    // After page loads, test tooltip visibility
+    window.addEventListener('load', function() {
+      console.log('Page fully loaded');
+      const tooltip = document.getElementById('hall-tooltip');
+      console.log('Tooltip element found:', !!tooltip);
+      
+      // Test removing hidden class
+      setTimeout(() => {
+        if (tooltip) {
+          console.log('Tooltip before removing hidden:', tooltip.classList.toString());
+          tooltip.classList.remove('hidden');
+          tooltip.style.left = '100px';
+          tooltip.style.top = '100px';
+          tooltip.style.zIndex = '9999';
+          console.log('Tooltip after removing hidden:', tooltip.classList.toString());
+          console.log('Tooltip computed opacity:', window.getComputedStyle(tooltip).opacity);
+          console.log('Tooltip computed display:', window.getComputedStyle(tooltip).display);
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

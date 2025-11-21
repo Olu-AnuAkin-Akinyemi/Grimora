@@ -107,10 +107,18 @@ Grimora/
 **Front-End Only (Phase 1):**
 
 - **HTML5** - Semantic structure
-- **CSS3** - Styling and layout
+- **CSS3** - Styling and layout with backdrop-filter effects
 - **Vanilla JavaScript (ES6+)** - No frameworks, modular architecture
+- **THREE.js** - 3D visualization and animation
 - **JSDoc** - Comprehensive documentation
 - **JSON/JS modules** - Content and configuration data
+
+### 3D Visualization
+
+- **Dual Canvas Architecture** - Separate THREE.js scenes for background and side panel
+- **Raycasting for Interaction** - Mouse hover detection on 3D objects
+- **WebGL Rendering** - Hardware-accelerated graphics with fallback support
+- **Optimization** - Device pixel ratio scaling and viewport constraints
 
 ### Architecture Principles
 
@@ -144,13 +152,25 @@ git clone https://github.com/Olu-AnuAkin-Akinyemi/Grimora.git
 cd Grimora
 ```
 
+Start an HTTP server:
+
+```bash
+python3 -m http.server 8000
+# or: python -m http.server 8000 (for Python 2)
+```
+
 Open in browser:
 
 ```bash
-open client/index.html
-# or
-python3 -m http.server 8000  # Then visit http://localhost:8000/client
+open http://localhost:8000/client/
 ```
+
+### Development Notes
+
+- All code is vanilla JavaScript (ES6+ modules) with no build step required
+- Files are served fresh from disk; refresh your browser to see changes
+- Open browser DevTools (F12) to debug and check for console errors
+- THREE.js visualizations require WebGL support
 
 ---
 
@@ -175,6 +195,38 @@ Lessons are tracked in `client/JS/data/lessons_level1.js` with:
 - Learning paths (Mind, Matter, Motion, Heart, Code & Flow)
 - Cross-lesson connections
 - Estimated completion times
+
+---
+
+## 🎭 UI/UX Features
+
+### Three-Tier Navigation
+
+1. **Cover State** - Opening screen with book-like aesthetic
+2. **Main View** - Animated background sigil with book spine button
+3. **Side Panel** - Four Hall sigils with interactive hover detection
+
+### Interactive Elements
+
+- **Hall Sigils** - 3D rotating/floating spheres representing each Hall
+  - **Math Sanctum** - Orange sigil with cyan glow
+  - **Matter Lab** - Cyan sigil with pulse animation
+  - **Hall of Ma'at** - Yellow/gold sigil with steady glow
+  - **Machina Workshop** - Green sigil with rotating motion
+
+- **Hover Tooltips** - Frosted glass design revealing:
+  - Hall name and subtitle
+  - Associated learning paths (Mind, Matter, Motion, Heart, Code & Flow)
+  - Quick navigation hint
+
+- **Pointer Feedback** - Cursor changes to pointer only when hovering over interactive sigils
+
+### Design Details
+
+- **Frosted Glass Effect** - backdrop-filter with 20px blur and 150% saturation
+- **Smooth Animations** - requestAnimationFrame-based rendering for 60fps performance
+- **Responsive Layout** - Flexbox-based panel that adapts to screen size
+- **Mobile-First** - Touch-friendly interactions with appropriate spacing
 
 ---
 
@@ -210,7 +262,10 @@ Balance, truth, and order inform:
 ✅ Content structure defined  
 ✅ Lesson templates created  
 ✅ Initial lessons drafted  
-🔄 UI implementation in progress
+✅ UI/UX implementation with THREE.js visualization  
+✅ Interactive Hall sigils with hover detection  
+✅ Responsive side panel navigation  
+🔄 Lesson page routing and content display in progress
 
 ### Future Levels
 

@@ -1,0 +1,288 @@
+/* client/CSS/layout.css */
+/* Layout: App structure, positioning, responsive grid */
+
+body {
+  background: var(--color-bg-deep);
+  color: var(--color-text-primary);
+  font-family: var(--font-primary);
+}
+
+/* THREE.js canvas container - fullscreen background */
+#three-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-bg);
+  pointer-events: none;
+}
+
+#three-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Prevent touch gestures on canvas */
+  touch-action: none;
+}
+
+/* Main app container */
+#app {
+  position: relative;
+  z-index: var(--z-content);
+  width: 100%;
+  height: 100vh;
+  height: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+}
+
+/* View states */
+.view-state {
+  display: none;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity var(--timing-slow) var(--ease-out);
+}
+
+.view-state.active {
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+}
+
+/* ===== COVER VIEW ===== */
+#cover-view {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-6);
+}
+
+/* ===== MAIN VIEW ===== */
+#main-view {
+  /* THREE.js background sigil renders here */
+}
+
+/* ===== HUB VIEW (deprecated - using side panel) ===== */
+#hub-view {
+  display: none;
+}
+
+.cover-content {
+  max-width: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.grimora-emblem {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  margin-bottom: var(--space-4);
+}
+
+.emblem-glow {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color-glow-primary) 0%, transparent 70%);
+  opacity: 0.6;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+.grimora-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.title-main {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  color: var(--color-glow-primary);
+  text-shadow: var(--glow-sm);
+}
+
+.title-tagline {
+  font-size: var(--text-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.cover-footer {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.footer-divider {
+  opacity: 0.5;
+}
+
+/* ===== HUB VIEW ===== */
+#hub-view {
+  padding: var(--space-6);
+  gap: var(--space-8);
+}
+
+.hub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-bg-stone-light);
+}
+
+.hub-title {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+/* Sigils container - THREE.js renders here */
+.sigils-container {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Let mouse events pass through to canvas */
+}
+
+/* Halls Grid - hidden, using sigils only */
+.halls-grid {
+  display: none;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  #hub-view {
+    padding: var(--space-4);
+  }
+  
+  .hub-header {
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: flex-start;
+  }
+}
+
+/* ===== MODAL ===== */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-modal-overlay);
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  position: relative;
+  z-index: var(--z-modal);
+  background: var(--color-bg-stone);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--shadow-lg), var(--glow-sm);
+  border: 1px solid var(--color-glow-primary);
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  font-size: var(--text-2xl);
+  color: var(--color-text-muted);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--timing-fast);
+}
+
+.modal-close:hover {
+  color: var(--color-glow-primary);
+}
+
+.modal-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-4);
+}
+
+.modal-description {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+  line-height: 1.6;
+}
+
+/* ===== LOADING SPINNER ===== */
+.spinner {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: var(--z-spinner);
+  width: 60px;
+  height: 60px;
+}
+
+.spinner.active {
+  display: block;
+}
+
+.spinner-glow {
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-top-color: var(--color-glow-primary);
+  border-radius: 50%;
+  animation: spinner-rotate 1s linear infinite;
+  box-shadow: var(--glow-md);
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}

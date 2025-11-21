@@ -1,0 +1,94 @@
+/* client/CSS/tokens.css */
+/* Design Tokens: Colors, Typography, Spacing, Timing */
+
+:root {
+  /* Colors - Stone & Glow Palette */
+  --color-bg-deep: #0d0d0d;
+  --color-bg-stone: #1a1a1a;
+  --color-bg-stone-light: #2d2d2d;
+  
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: #a0a0a0;
+  --color-text-muted: #707070;
+  
+  --color-glow-primary: #00d9ff;
+  --color-glow-secondary: #00a3cc;
+  --color-glow-accent: #7df9ff;
+  
+  --color-math: #00d9ff;
+  --color-chem: #ff6b35;
+  --color-lore: #ffd700;
+  --color-physeng: #00ff88;
+  
+  /* Typography */
+  --font-primary: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Cinzel', Georgia, serif;
+  
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  
+  /* Spacing */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+  
+  /* Shadows & Glows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.7);
+  
+  --glow-sm: 0 0 10px var(--color-glow-primary);
+  --glow-md: 0 0 20px var(--color-glow-primary);
+  --glow-lg: 0 0 40px var(--color-glow-primary);
+  
+  /* Timing Functions */
+  --timing-fast: 150ms;
+  --timing-base: 300ms;
+  --timing-slow: 500ms;
+  
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-in: cubic-bezier(0.32, 0, 0.67, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  
+  /* Z-index layers */
+  --z-bg: -1;
+  --z-content: 1;
+  --z-ui: 10;
+  --z-modal-overlay: 100;
+  --z-modal: 101;
+  --z-spinner: 200;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  :root {
+    --text-3xl: 1.5rem;   /* 24px on mobile */
+    --text-4xl: 1.875rem; /* 30px on mobile */
+    
+    --space-8: 1.5rem;
+    --space-12: 2rem;
+    --space-16: 3rem;
+  }
+}
