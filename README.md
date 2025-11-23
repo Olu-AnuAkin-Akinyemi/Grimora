@@ -204,7 +204,7 @@ Lessons are tracked in `client/JS/data/lessons_level1.js` with:
 
 1. **Cover State** - Opening screen with book-like aesthetic
 2. **Main View** - Animated background sigil with book spine button
-3. **Side Panel** - Four Hall sigils with interactive hover detection
+3. **Side Panel** - Clean, minimalist panel with four Hall sigils and interactive hover detection
 
 ### Interactive Elements
 
@@ -214,16 +214,22 @@ Lessons are tracked in `client/JS/data/lessons_level1.js` with:
   - **Hall of Ma'at** - Yellow/gold sigil with steady glow
   - **Machina Workshop** - Green sigil with rotating motion
 
-- **Hover Tooltips** - Frosted glass design revealing:
+- **Hover Tooltips** - Liquid Glass design with enhanced blur revealing:
   - Hall name and subtitle
   - Associated learning paths (Mind, Matter, Motion, Heart, Code & Flow)
   - Quick navigation hint
+  - Subtle gradient overlay and edge lensing for premium feel
 
 - **Pointer Feedback** - Cursor changes to pointer only when hovering over interactive sigils
 
 ### Design Details
 
-- **Frosted Glass Effect** - backdrop-filter with 20px blur and 150% saturation
+- **Liquid Glass Effect** - Apple-inspired optical glass aesthetic featuring:
+  - Enhanced refraction with 40-80px blur and 180% saturation
+  - Multi-layer backgrounds with subtle gradient overlays
+  - Edge lensing via layered box-shadows and inset highlights
+  - Soft borders with semi-transparent cyan accents
+  - Fluid cubic-bezier easing (0.4, 0, 0.2, 1) for natural motion
 - **Smooth Animations** - requestAnimationFrame-based rendering for 60fps performance
 - **Responsive Layout** - Flexbox-based panel that adapts to screen size
 - **Mobile-First** - Touch-friendly interactions with appropriate spacing

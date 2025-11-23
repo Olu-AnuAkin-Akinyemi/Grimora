@@ -121,8 +121,41 @@ In `animateCameraOut()`:
 const endPosition = { x: 0, y: 3, z: 10 }; // Modify these values
 ```
 
+## UI Design: Liquid Glass Effect
+
+### Implementation (November 2025)
+Applied Apple-inspired "Liquid Glass" aesthetic to key UI components:
+
+**Side Panel:**
+- Enhanced backdrop-filter: `blur(80px) saturate(180%)`
+- Multi-layer background with subtle gradient overlay
+- Semi-transparent base: `rgba(8, 8, 8, 0.95)`
+- Refined cyan border: `1px solid rgba(0, 217, 255, 0.4)`
+- Three-layer shadow system with edge lensing
+- Inset highlight for glass refraction effect
+
+**Hover Tooltips:**
+- Enhanced blur: `blur(40px) saturate(180%)`
+- Subtle gradient overlay (3% → 1% opacity gradient)
+- Soft white border: `rgba(255, 255, 255, 0.15)`
+- Three-layer depth shadows
+- No animations for clean, professional appearance
+
+**Design Philosophy:**
+- Optical refraction via enhanced backdrop-filter
+- Reflection through subtle gradient layers
+- Edge lensing with inset shadows and border glow
+- Fluid motion with cubic-bezier easing
+- Subtlety over prominence for premium feel
+
+**Navigation Simplification:**
+- Removed "The Four Halls" title from side panel
+- Clean, minimalist approach letting sigils speak for themselves
+- Focus on interactive 3D elements without text distractions
+
 ## Future Enhancements
 - Add subtle page-turning sound effect
 - Implement close animation (reverse of opening)
 - Add micro-animations for cover texture during open
 - Consider adding shadow/lighting changes during transition
+- Extend Liquid Glass effect to other UI components as needed
