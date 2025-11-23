@@ -5,8 +5,6 @@ import { SigilFactory } from '../sigils/sigilFactory.js';
 import { createStoneMaterial } from '../materials/stoneMaterial.js';
 import { HALLS_LEVEL1 } from '../../data/halls_level1.js';
 
-console.log('🔮 [HubView3D] Module loading...', new Date().toISOString());
-
 /**
  * HubView3D - The open book with four Hall sigils.
  * Sigils float in 3D space with interactive hover tooltips.
@@ -34,14 +32,6 @@ export class HubView3D {
       return;
     }
     
-    console.log('[HubView3D] Canvas found:', this.canvas);
-    console.log('[HubView3D] Canvas computed style:', {
-      display: window.getComputedStyle(this.canvas).display,
-      width: window.getComputedStyle(this.canvas).width,
-      height: window.getComputedStyle(this.canvas).height,
-      visibility: window.getComputedStyle(this.canvas).visibility,
-      opacity: window.getComputedStyle(this.canvas).opacity
-    });
     
     // Create dedicated renderer for side panel
     this.renderer = new THREE.WebGLRenderer({
@@ -50,9 +40,6 @@ export class HubView3D {
       antialias: true
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    
-    console.log('[HubView3D] Renderer created');
-    console.log('[HubView3D] Renderer size:', this.renderer.getSize(new THREE.Vector2()));
     
     this.group = new THREE.Group();
     this.hallSigils = {}; // Map of hallId -> sigil group
@@ -105,35 +92,21 @@ export class HubView3D {
    */
   resizeCanvas() {
     if (!this.canvas || !this.renderer) {
-      console.warn('[HubView3D] resizeCanvas - missing canvas or renderer', {
-        hasCanvas: !!this.canvas,
-        hasRenderer: !!this.renderer
-      });
       return;
     }
-    
+
     const container = this.canvas.parentElement;
     const width = container?.clientWidth || window.innerWidth * 0.85;
     const height = container?.clientHeight || window.innerHeight - 100;
-    
-    console.log('[HubView3D] resizeCanvas:', {
-      containerWidth: container?.clientWidth,
-      containerHeight: container?.clientHeight,
-      fallbackWidth: width,
-      fallbackHeight: height,
-      windowInnerHeight: window.innerHeight,
-      viewportHeight: window.innerHeight
-    });
-    
-    if (width === 0 || height === 0) {
-      console.warn('[HubView3D] Canvas dimensions are zero, using fallback:', { width, height });
-    }
-    
-    this.camera.aspect = (width || 500) / (height || 600);
+
+    // Use fallback dimensions if container is not sized yet
+    const finalWidth = width || 500;
+    const finalHeight = height || 600;
+
+    this.camera.aspect = finalWidth / finalHeight;
     this.camera.updateProjectionMatrix();
-    
-    this.renderer.setSize(width || 500, height || 600);
-    console.log('[HubView3D] Renderer size set');
+
+    this.renderer.setSize(finalWidth, finalHeight);
   }
   
   /**
@@ -148,7 +121,6 @@ export class HubView3D {
    * Arranged vertically for side panel.
    */
   createHallSigils() {
-    console.log('[HubView3D] Creating hall sigils...');
     
     // Hall configuration with metadata - vertical layout
     const hallConfig = {
@@ -188,37 +160,42 @@ export class HubView3D {
     };
     
     Object.entries(hallConfig).forEach(([hallId, config]) => {
-      console.log('[HubView3D] Creating sigil:', hallId, 'type:', config.type);
-      
-      const sigil = SigilFactory.createSigil(config.type, { 
-        size: 0.6, 
-        animated: true 
+      const sigil = SigilFactory.createSigil(config.type, {
+        size: 0.6,
+        animated: true
       });
-      
+
       if (!sigil) {
         console.error('[HubView3D] Failed to create sigil for:', hallId);
         return;
       }
       
-      console.log('[HubView3D] Sigil created, positioning at:', { x: config.x, y: config.y });
-      
       sigil.position.set(config.x, config.y, 0);
-      
-      // Reduce brightness for all sigils
+
+      // Reduce brightness and prepare for raycasting
       sigil.traverse((child) => {
-        if (child.isMesh && child.material) {
-          if (child.material.emissive) {
-            child.material.emissive.multiplyScalar(0.4);
+        if (child.isMesh) {
+          // Compute bounding sphere for raycasting
+          if (child.geometry) {
+            child.geometry.computeBoundingSphere();
+            child.geometry.computeBoundingBox();
           }
-          if (child.material.color && config.color) {
-            // Override color for specific sigils (like math)
-            child.material.color.setHex(config.color);
-            child.material.color.multiplyScalar(0.6);
-          } else if (child.material.color) {
-            // Reduce brightness for all others
-            child.material.color.multiplyScalar(0.6);
+
+          // Update materials
+          if (child.material) {
+            if (child.material.emissive) {
+              child.material.emissive.multiplyScalar(0.4);
+            }
+            if (child.material.color && config.color) {
+              // Override color for specific sigils (like math)
+              child.material.color.setHex(config.color);
+              child.material.color.multiplyScalar(0.6);
+            } else if (child.material.color) {
+              // Reduce brightness for all others
+              child.material.color.multiplyScalar(0.6);
+            }
+            child.material.needsUpdate = true;
           }
-          child.material.needsUpdate = true;
         }
       });
       
@@ -234,11 +211,9 @@ export class HubView3D {
       this.hallSigils[hallId] = sigil;
       this.sigilArray.push(sigil);
       this.group.add(sigil);
-      
-      console.log('[HubView3D] Sigil added to group:', hallId);
     });
-    
-    console.log('[HubView3D] Hall sigils creation complete. Total:', this.sigilArray.length);
+
+    console.log('[HubView3D] Created', this.sigilArray.length, 'hall sigils');
   }
   
   /**
@@ -247,26 +222,21 @@ export class HubView3D {
   setupEventListeners() {
     this.onMouseMove = this.handleMouseMove.bind(this);
     this.onClick = this.handleClick.bind(this);
-    
-    // Attach to both window and canvas for redundancy
+
+    // Attach listeners only to canvas for more precise detection
     this.attachListeners = () => {
-      console.log('[HubView3D] Attaching event listeners to canvas');
       if (this.canvas) {
         this.canvas.addEventListener('mousemove', this.onMouseMove);
         this.canvas.addEventListener('click', this.onClick);
+        console.log('[HubView3D] Event listeners attached to canvas');
       }
-      window.addEventListener('mousemove', this.onMouseMove);
-      window.addEventListener('click', this.onClick);
     };
-    
+
     this.detachListeners = () => {
-      console.log('[HubView3D] Detaching event listeners');
       if (this.canvas) {
         this.canvas.removeEventListener('mousemove', this.onMouseMove);
         this.canvas.removeEventListener('click', this.onClick);
       }
-      window.removeEventListener('mousemove', this.onMouseMove);
-      window.removeEventListener('click', this.onClick);
     };
   }
   
@@ -275,17 +245,20 @@ export class HubView3D {
    */
   handleMouseMove(event) {
     if (!this.isVisible || !this.canvas) {
-      console.log('[HubView3D] Early return: isVisible=', this.isVisible, 'canvas=', !!this.canvas);
       return;
     }
-    
+
     // Get canvas bounds
     const rect = this.canvas.getBoundingClientRect();
-    console.log('[HubView3D] handleMouseMove fired. Event:', { clientX: event.clientX, clientY: event.clientY }, 'Canvas rect:', rect);
-    
+
+    // Check if canvas has valid dimensions
+    if (rect.width === 0 || rect.height === 0) {
+      return;
+    }
+
     // Check if mouse is within canvas bounds
-    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) {
-      console.log('[HubView3D] Mouse outside canvas bounds');
+    if (event.clientX < rect.left || event.clientX > rect.right ||
+        event.clientY < rect.top || event.clientY > rect.bottom) {
       if (this.hoveredSigil) {
         this.hoveredSigil.scale.set(1, 1, 1);
         this.hoveredSigil = null;
@@ -293,53 +266,54 @@ export class HubView3D {
       }
       return;
     }
-    
-    console.log('[HubView3D] Mouse within canvas bounds');
-    
+
     // Convert mouse position to normalized device coordinates relative to canvas
     this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
     
     // Update raycaster
     this.raycaster.setFromCamera(this.mouse, this.camera);
-    
-    // Collect all meshes from all sigils
-    const meshes = [];
-    const meshToSigil = new Map();
-    
+
+    // Force update all sigil matrices before raycasting
     this.sigilArray.forEach(sigil => {
-      sigil.traverse((child) => {
-        if (child.isMesh) {
-          meshes.push(child);
-          meshToSigil.set(child, sigil);
-        }
-      });
+      sigil.updateMatrixWorld(true);
     });
-    
-    // Check for intersections with all meshes
-    const intersects = this.raycaster.intersectObjects(meshes, false);
-    
+
+    // Raycast against sigil groups with recursive=true to check children meshes
+    const intersects = this.raycaster.intersectObjects(this.sigilArray, true);
+
     if (intersects.length > 0) {
-      // Get the sigil from the first intersected mesh
-      const intersectedMesh = intersects[0].object;
-      const newHovered = meshToSigil.get(intersectedMesh);
-      
+
+      // Find which sigil group was hit by checking parent hierarchy
+      let newHovered = null;
+      let obj = intersects[0].object;
+
+      // Traverse up to find the sigil group
+      while (obj && !newHovered) {
+        const foundSigil = this.sigilArray.find(sigil => sigil === obj);
+        if (foundSigil) {
+          newHovered = foundSigil;
+          break;
+        }
+        obj = obj.parent;
+      }
+
       if (this.hoveredSigil !== newHovered) {
         // Reset previous hovered sigil
         if (this.hoveredSigil) {
           this.hoveredSigil.scale.set(1, 1, 1);
         }
-        
+
         this.hoveredSigil = newHovered;
-        
+
         // Scale up new hovered sigil
         if (this.hoveredSigil) {
           this.hoveredSigil.scale.set(1.2, 1.2, 1.2);
         }
-        
+
         this.showTooltip(newHovered, event);
       }
-      
+
       // Set cursor to pointer on panel canvas
       if (this.canvas) this.canvas.style.cursor = 'pointer';
     } else {
@@ -349,7 +323,7 @@ export class HubView3D {
         this.hoveredSigil = null;
         this.scheduleHideTooltip();
       }
-      
+
       // Reset cursor
       if (this.canvas) this.canvas.style.cursor = 'default';
     }
@@ -358,7 +332,7 @@ export class HubView3D {
   /**
    * Handle click on sigil.
    */
-  handleClick(event) {
+  handleClick() {
     if (!this.hoveredSigil) return;
     
     const hallId = this.hoveredSigil.userData.hallId;
@@ -377,21 +351,19 @@ export class HubView3D {
    */
   showTooltip(sigil, event) {
     clearTimeout(this.tooltipTimeout);
-    
+
     const tooltip = document.getElementById('hall-tooltip');
-    console.log('[HubView3D] showTooltip: tooltip element found?', !!tooltip);
     if (!tooltip) {
       console.warn('[HubView3D] Tooltip element not found in DOM!');
       return;
     }
-    
+
     const data = sigil.userData;
-    console.log('[HubView3D] showTooltip called for:', data.title);
-    
+
     // Update tooltip content
     tooltip.querySelector('.tooltip-title').textContent = data.title;
     tooltip.querySelector('.tooltip-subtitle').textContent = data.subtitle;
-    
+
     const pathsContainer = tooltip.querySelector('.tooltip-paths');
     pathsContainer.innerHTML = '';
     data.paths.forEach(path => {
@@ -400,27 +372,32 @@ export class HubView3D {
       tag.textContent = path;
       pathsContainer.appendChild(tag);
     });
-    
-    // Simple positioning: centered on cursor, above it
-    let left = event.clientX - 90;
-    let top = event.clientY - 100;
-    
-    console.log('[HubView3D] Positioning tooltip at:', { left, top, event: { clientX: event.clientX, clientY: event.clientY } });
-    
+
+    // Show tooltip first to get dimensions
+    tooltip.classList.remove('hidden');
+
+    // Get tooltip dimensions
+    const tooltipWidth = tooltip.offsetWidth;
+    const tooltipHeight = tooltip.offsetHeight;
+
+    // Position centered below the cursor with offset
+    let left = event.clientX - (tooltipWidth / 2);
+    let top = event.clientY + 20; // 20px below cursor
+
+    // Bounds checking - keep tooltip on screen
+    const padding = 10;
+    const maxLeft = window.innerWidth - tooltipWidth - padding;
+    const maxTop = window.innerHeight - tooltipHeight - padding;
+
+    left = Math.max(padding, Math.min(left, maxLeft));
+    top = Math.max(padding, Math.min(top, maxTop));
+
     // Position tooltip with fixed positioning (global coordinates)
     tooltip.style.position = 'fixed';
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
-    tooltip.style.display = 'block';
-    tooltip.style.zIndex = '500';
-    
-    console.log('[HubView3D] Removing hidden class...');
-    console.log('[HubView3D] Tooltip classList before:', tooltip.classList.toString());
-    tooltip.classList.remove('hidden');
-    console.log('[HubView3D] Tooltip classList after:', tooltip.classList.toString());
-    console.log('[HubView3D] Tooltip computed style display:', window.getComputedStyle(tooltip).display);
-    console.log('[HubView3D] Tooltip computed style opacity:', window.getComputedStyle(tooltip).opacity);
-    
+    tooltip.style.zIndex = '9999';
+
     // Auto-hide after 6 seconds
     this.scheduleHideTooltip(6000);
   }
@@ -442,62 +419,25 @@ export class HubView3D {
    * Show the hub view.
    */
   async show() {
-    console.log('[HubView3D] show() called');
-    console.log('[HubView3D] Canvas element:', this.canvas);
-    console.log('[HubView3D] Canvas parent:', this.canvas?.parentElement);
-    console.log('[HubView3D] Side panel element:', document.getElementById('side-panel'));
-    console.log('[HubView3D] Side panel state:', document.getElementById('side-panel')?.getAttribute('data-state'));
-    console.log('[HubView3D] Body side-panel-open class:', document.body.classList.contains('side-panel-open'));
-    
     this.isVisible = true;
     this.group.visible = true;
-    
-    console.log('[HubView3D] Set isVisible=true, group.visible=true');
-    console.log('[HubView3D] Group visibility status:', {
-      groupVisible: this.group.visible,
-      groupChildren: this.group.children.length,
-      groupWorldVisible: this.group.getWorldPosition(new THREE.Vector3()),
-      sceneHasGroup: this.scene.children.includes(this.group)
-    });
-    
-    // Resize canvas when panel opens
-    console.log('[HubView3D] Calling resizeCanvas (immediate)');
+
+    // Resize canvas when panel opens (multiple times to handle CSS transitions)
     this.resizeCanvas();
-    
-    console.log('[HubView3D] Calling resizeCanvas (via rAF)');
-    requestAnimationFrame(() => {
-      console.log('[HubView3D] rAF resizeCanvas');
-      this.resizeCanvas();
-    });
-    
-    console.log('[HubView3D] Calling resizeCanvas (via setTimeout 400ms)');
-    setTimeout(() => {
-      console.log('[HubView3D] setTimeout resizeCanvas');
-      this.resizeCanvas();
-    }, 400);
-    
+    requestAnimationFrame(() => this.resizeCanvas());
+    setTimeout(() => this.resizeCanvas(), 400);
+
     // Reset camera position
     this.camera.position.set(0, 0, 8);
     this.camera.lookAt(0, 0, 0);
-    
-    console.log('[HubView3D] Camera reset to position (0, 0, 8)');
-    console.log('[HubView3D] Scene structure:', {
-      sceneChildrenCount: this.scene.children.length,
-      children: this.scene.children.map(c => ({ name: c.name || 'unnamed', type: c.type }))
-    });
-    console.log('[HubView3D] Sigils count:', Object.keys(this.hallSigils).length);
-    console.log('[HubView3D] Hall sigils:', Object.keys(this.hallSigils));
-    
+
     // Add event listeners
     this.attachListeners();
-    
-    console.log('[HubView3D] Event listeners added');
-    
+
     // Animate sigils in
-    console.log('[HubView3D] Starting animateIn...');
     await this.animateIn();
-    console.log('[HubView3D] animateIn complete');
-    console.log('[HubView3D] Final check - group children:', this.group.children.length, 'all visible:', this.group.children.every(c => c.visible));
+
+    console.log('[HubView3D] View shown with', Object.keys(this.hallSigils).length, 'sigils');
   }
   
   /**
@@ -628,11 +568,6 @@ export class HubView3D {
    * Start dedicated animation loop for side panel
    */
   startAnimationLoop() {
-    console.log('[HubView3D] Starting animation loop');
-    console.log('[HubView3D] Scene children count:', this.scene.children.length);
-    console.log('[HubView3D] Group children count:', this.group.children.length);
-    console.log('[HubView3D] Hall sigils count:', Object.keys(this.hallSigils).length);
-    
     const clock = new THREE.Clock();
     
     const animate = () => {

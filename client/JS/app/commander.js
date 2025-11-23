@@ -170,19 +170,22 @@ export class Commander {
   }
   
   /**
-   * Transition from cover to main view
+   * Transition from cover to main view - smooth crossfade
    */
   async transitionToMain() {
     console.log('[Commander] Transitioning to main...');
-    
-    // Hide cover (3D + DOM)
-    await this.coverView.hide();
-    this.domElements.coverView?.classList.remove('active');
-    
-    // Show main (3D + DOM)
-    await this.mainView.show();
+
+    // Start showing main view (DOM + 3D)
     this.domElements.mainView?.classList.add('active');
-    
+    const showMainPromise = this.mainView.show();
+
+    // Simultaneously hide cover view (DOM + 3D)
+    this.domElements.coverView?.classList.remove('active');
+    const hideCoverPromise = this.coverView.hide();
+
+    // Wait for both transitions to complete
+    await Promise.all([showMainPromise, hideCoverPromise]);
+
     this.state.setView('main');
   }
   
@@ -201,40 +204,27 @@ export class Commander {
    * Open side panel
    */
   async openSidePanel() {
-    console.log('[Commander] Opening side panel...');
-    console.log('[Commander] Side panel element:', this.domElements.sidePanel);
-    console.log('[Commander] Side panel current state:', this.domElements.sidePanel?.getAttribute('data-state'));
-    console.log('[Commander] Book spine button:', this.domElements.bookSpineBtn);
-    
     this.sidePanelOpen = true;
-    
-    console.log('[Commander] Setting data-state="open"');
+
     this.domElements.sidePanel?.setAttribute('data-state', 'open');
-    console.log('[Commander] Side panel state after:', this.domElements.sidePanel?.getAttribute('data-state'));
-    
-    console.log('[Commander] Adding body.side-panel-open class');
     document.body.classList.add('side-panel-open');
-    console.log('[Commander] Body classList:', Array.from(document.body.classList));
-    
     this.domElements.bookSpineBtn?.setAttribute('aria-expanded', 'true');
-    
-    console.log('[Commander] Calling hubView.show()');
+
     // Show hub view in side panel
     await this.hubView.show();
-    console.log('[Commander] hubView.show() complete');
+
+    console.log('[Commander] Side panel opened');
   }
   
   /**
    * Close side panel
    */
   async closeSidePanel() {
-    console.log('[Commander] Closing side panel...');
-    
     this.sidePanelOpen = false;
     this.domElements.sidePanel?.setAttribute('data-state', 'closed');
     document.body.classList.remove('side-panel-open');
     this.domElements.bookSpineBtn?.setAttribute('aria-expanded', 'false');
-    
+
     // Hide hub view
     await this.hubView.hide();
   }

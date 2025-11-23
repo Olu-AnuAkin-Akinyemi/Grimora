@@ -82,25 +82,22 @@
     <aside id="side-panel" class="side-panel" data-state="closed">
       <div class="side-panel-overlay"></div>
       <div class="side-panel-content">
-        <header class="panel-header">
-          <h2 class="panel-title">The Four Halls</h2>
-        </header>
         
         <!-- THREE.js renders 4 hall sigils here in this container -->
         <div id="panel-sigils-container" class="panel-sigils-container">
           <canvas id="panel-sigils-canvas"></canvas>
         </div>
-        
-        <!-- Tooltip for hover -->
-        <div id="hall-tooltip" class="hall-tooltip hidden">
-          <h3 class="tooltip-title"></h3>
-          <p class="tooltip-subtitle"></p>
-          <div class="tooltip-paths"></div>
-          <button class="tooltip-enter-btn">Enter →</button>
-        </div>
       </div>
     </aside>
-    
+
+    <!-- Tooltip for hover (outside side panel to avoid clipping) -->
+    <div id="hall-tooltip" class="hall-tooltip hidden">
+      <h3 class="tooltip-title"></h3>
+      <p class="tooltip-subtitle"></p>
+      <div class="tooltip-paths"></div>
+      <button class="tooltip-enter-btn">Enter →</button>
+    </div>
+
   </div>
   
   <!-- Auth Modal -->
@@ -132,32 +129,5 @@
   
   <!-- Main JS (ES6 modules) -->
   <script type="module" src="JS/main.js"></script>
-  
-  <!-- Debug script to test tooltip manually -->
-  <script>
-    // Test that new changes are being loaded
-    console.log('🔮 Index.html loaded at:', new Date().toISOString());
-    
-    // After page loads, test tooltip visibility
-    window.addEventListener('load', function() {
-      console.log('Page fully loaded');
-      const tooltip = document.getElementById('hall-tooltip');
-      console.log('Tooltip element found:', !!tooltip);
-      
-      // Test removing hidden class
-      setTimeout(() => {
-        if (tooltip) {
-          console.log('Tooltip before removing hidden:', tooltip.classList.toString());
-          tooltip.classList.remove('hidden');
-          tooltip.style.left = '100px';
-          tooltip.style.top = '100px';
-          tooltip.style.zIndex = '9999';
-          console.log('Tooltip after removing hidden:', tooltip.classList.toString());
-          console.log('Tooltip computed opacity:', window.getComputedStyle(tooltip).opacity);
-          console.log('Tooltip computed display:', window.getComputedStyle(tooltip).display);
-        }
-      }, 1000);
-    });
-  </script>
 </body>
 </html>

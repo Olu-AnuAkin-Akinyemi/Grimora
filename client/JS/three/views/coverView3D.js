@@ -1,9 +1,8 @@
 // client/JS/three/views/coverView3D.js
 
 import * as THREE from 'three';
-import { SigilFactory } from '../sigils/sigilFactory.js';
+import { BackgroundGeometry } from '../geometries/backgroundGeometry.js';
 import { createStoneMaterial } from '../materials/stoneMaterial.js';
-import { createParticleGlowMaterial } from '../materials/glowMaterial.js';
 
 /**
  * CoverView3D - The closed Grimora book with a central sigil.
@@ -25,8 +24,7 @@ export class CoverView3D {
     this.rightCover = null;
     this.spine = null;
     this.centralSigil = null;
-    this.particles = null;
-    
+
     this.isVisible = false;
     
     this.init();
@@ -62,23 +60,28 @@ export class CoverView3D {
     const spineGeom = new THREE.BoxGeometry(0.3, bookHeight, bookDepth);
     this.spine = new THREE.Mesh(spineGeom, coverMaterial);
     this.bookGroup.add(this.spine);
-    
-    // Add embossed title on right cover
-    this.addBookTitle();
-    
+
     this.group.add(this.bookGroup);
-    
-    // Central sigil (centered in front of camera)
-    this.centralSigil = SigilFactory.createSigil('math', { 
-      size: 2.5, 
-      animated: true 
-    });
+
+    // Central sigil (centered in front of camera) - using custom background geometry
+    const isMobile = this.sceneManager.isMobile;
+    try {
+      this.centralSigil = BackgroundGeometry.create({
+        size: 2.5,
+        color: 0x00d9ff,
+        mobile: isMobile
+      });
+    } catch (error) {
+      console.warn('[CoverView3D] Using fallback geometry:', error);
+      this.centralSigil = BackgroundGeometry.createFallback(2.5, 0x00d9ff);
+    }
     this.centralSigil.position.set(0, 0, 0.6);
     this.group.add(this.centralSigil);
-    
-    // Add ambient particles
-    this.addAmbientParticles();
-    
+
+    // Enable drag-to-rotate interaction
+    const canvas = this.sceneManager.renderer.domElement;
+    BackgroundGeometry.enableDragRotation(this.centralSigil, canvas);
+
     // Position group
     this.group.position.set(0, 0, 0);
     
@@ -105,32 +108,6 @@ export class CoverView3D {
   }
   
   /**
-   * Add subtle floating particles for ambiance.
-   */
-  addAmbientParticles() {
-    const particleCount = this.sceneManager.isMobile ? 20 : 30;
-    const positions = new Float32Array(particleCount * 3);
-    
-    for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 10;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 5;
-    }
-    
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    
-    const material = createParticleGlowMaterial({
-      color: 0x00d9ff,
-      size: 0.05,
-      opacity: 0.4
-    });
-    
-    this.particles = new THREE.Points(geometry, material);
-    this.group.add(this.particles);
-  }
-  
-  /**
    * Show the cover view.
    */
   async show() {
@@ -146,61 +123,56 @@ export class CoverView3D {
   }
   
   /**
-   * Hide the cover view with book opening animation.
+   * Hide the cover view with smooth fade transition.
    */
   async hide() {
-    // Animate book opening
-    await this.animateBookOpening();
-    
+    await this.animateFadeOut();
+
+    // Cleanup drag rotation listeners
+    if (this.centralSigil?.userData?.cleanupDragRotation) {
+      this.centralSigil.userData.cleanupDragRotation();
+    }
+
     this.group.visible = false;
     this.isVisible = false;
   }
-  
+
   /**
-   * Animate book opening - covers rotate away from spine
+   * Smooth scale down and fade out transition.
    */
-  async animateBookOpening() {
+  async animateFadeOut() {
     return new Promise(resolve => {
-      const duration = 1500;
+      const duration = 800; // Slightly longer for smooth scale
       const startTime = Date.now();
-      
-      // Store initial rotation
-      const startRotation = { left: 0, right: 0 };
-      const endRotation = { left: -Math.PI * 0.55, right: Math.PI * 0.55 }; // ~100 degrees each
-      
-      // Sigil fades and moves up
-      const startSigilY = this.centralSigil.position.y;
-      const endSigilY = startSigilY + 2;
-      
+
       const animate = () => {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
-        // Ease out cubic for smooth opening
-        const eased = 1 - Math.pow(1 - progress, 3);
-        
-        // Rotate covers around their inner edge (spine side)
-        // Left cover pivots on right edge
-        this.leftCover.rotation.y = startRotation.left + (endRotation.left - startRotation.left) * eased;
-        
-        // Right cover pivots on left edge  
-        this.rightCover.rotation.y = startRotation.right + (endRotation.right - startRotation.right) * eased;
-        
-        // Fade and lift sigil
-        this.centralSigil.position.y = startSigilY + (endSigilY - startSigilY) * eased;
-        this.centralSigil.traverse((child) => {
-          if (child.material && child.material.opacity !== undefined) {
+
+        // Ease in cubic for smooth disappearance
+        const eased = Math.pow(progress, 3);
+
+        // Scale down the entire group (shrink to nothing)
+        const scale = 1 - eased;
+        this.group.scale.set(scale, scale, scale);
+
+        // Fade everything out
+        this.group.traverse((child) => {
+          if (child.material) {
+            if (child.material.transparent === undefined) {
+              child.material.transparent = true;
+            }
             child.material.opacity = 1 - eased;
           }
         });
-        
+
         if (progress < 1) {
           requestAnimationFrame(animate);
         } else {
           resolve();
         }
       };
-      
+
       animate();
     });
   }
@@ -239,84 +211,18 @@ export class CoverView3D {
   }
   
   /**
-   * Animate camera out from the cover view - synchronized with book opening.
-   */
-  async animateCameraOut() {
-    return new Promise((resolve) => {
-      const duration = 1500;
-      const startTime = Date.now();
-      
-      const startPosition = { ...this.sceneManager.camera.position };
-      const endPosition = { x: 0, y: 3, z: 10 }; // Pull back and up to see full open book
-      
-      const animate = () => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = this.easeInOutCubic(progress);
-        
-        this.sceneManager.camera.position.x = startPosition.x + (endPosition.x - startPosition.x) * eased;
-        this.sceneManager.camera.position.y = startPosition.y + (endPosition.y - startPosition.y) * eased;
-        this.sceneManager.camera.position.z = startPosition.z + (endPosition.z - startPosition.z) * eased;
-        
-        // Look slightly down at book as we pull back
-        const lookAtY = -0.5 * eased;
-        this.sceneManager.camera.lookAt(0, lookAtY, 0);
-        
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          resolve();
-        }
-      };
-      
-      animate();
-    });
-  }
-  
-  /**
-   * Animate camera out.
-   */
-  async animateCameraOut() {
-    return new Promise(resolve => {
-      const startPos = { z: this.camera.position.z };
-      const endPos = { z: 12 };
-      const duration = 800;
-      const startTime = Date.now();
-      
-      const animate = () => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Ease in cubic
-        const eased = Math.pow(progress, 3);
-        
-        this.camera.position.z = startPos.z + (endPos.z - startPos.z) * eased;
-        
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          resolve();
-        }
-      };
-      
-      animate();
-    });
-  }
-  
-  /**
-   * Update animation loop - rotate sigils.
+   * Update animation loop - animate central sigil.
    */
   update(deltaTime) {
     if (!this.isVisible) return;
-    
-    // Gentle rotation of central sigil
+
+    // Animate central sigil using optimized animation
     if (this.centralSigil) {
-      this.centralSigil.rotation.y += deltaTime * 0.5;
-    }
-    
-    // Subtle particle movement if implemented
-    if (this.particles) {
-      this.particles.rotation.y += deltaTime * 0.1;
+      if (this.centralSigil.userData.isFallback) {
+        BackgroundGeometry.animateFallback(this.centralSigil, deltaTime);
+      } else {
+        BackgroundGeometry.animate(this.centralSigil, deltaTime);
+      }
     }
   }
   

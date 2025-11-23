@@ -66,7 +66,7 @@
   /* Timing Functions */
   --timing-fast: 150ms;
   --timing-base: 300ms;
-  --timing-slow: 500ms;
+  --timing-slow: 800ms; /* Match 3D scale transitions */
   
   --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
   --ease-in: cubic-bezier(0.32, 0, 0.67, 0);

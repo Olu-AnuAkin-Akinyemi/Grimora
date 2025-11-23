@@ -160,11 +160,25 @@ body.side-panel-open .book-spine-btn {
   padding: 0;
   overflow: hidden;
   box-sizing: border-box;
+  
+  /* Liquid Glass: Enhanced refraction */
   -webkit-backdrop-filter: blur(80px) saturate(180%);
   backdrop-filter: blur(80px) saturate(180%);
-  background: rgba(8, 8, 8, 0.98);
-  border-left: 3px solid var(--color-glow-primary);
-  box-shadow: -10px 0 50px rgba(0, 217, 255, 0.3);
+  
+  /* Liquid Glass: Subtle multi-layer background for depth */
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%),
+    rgba(8, 8, 8, 0.95);
+  
+  /* Liquid Glass: Refined edge with subtle glow */
+  border-left: 1px solid rgba(0, 217, 255, 0.4);
+  
+  /* Liquid Glass: Enhanced depth shadows */
+  box-shadow: 
+    -10px 0 40px rgba(0, 0, 0, 0.5),
+    -2px 0 8px rgba(0, 217, 255, 0.2),
+    inset 1px 0 0 rgba(255, 255, 255, 0.08);
+  
   transform: translateX(100%);
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
@@ -244,22 +258,41 @@ body.side-panel-open .side-panel-content {
   pointer-events: auto;
 }
 
-/* ===== HALL TOOLTIP ===== */
+/* ===== HALL TOOLTIP (Liquid Glass Effect) ===== */
 .hall-tooltip {
   position: fixed;
-  background: rgba(20, 30, 40, 0.85);
-  border: 1px solid rgba(0, 217, 255, 0.5);
-  border-radius: var(--radius-md);
+  
+  /* Liquid Glass: Subtle multi-layer background for depth */
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%),
+    rgba(20, 30, 40, 0.75);
+  
+  /* Liquid Glass: Subtle edge lensing */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  
   padding: var(--space-2) var(--space-3);
   min-width: auto;
   max-width: 180px;
   width: 180px;
-  box-shadow: 0 0 20px rgba(0, 217, 255, 0.3), inset 0 0 20px rgba(0, 217, 255, 0.1);
+  
+  /* Liquid Glass: Refined depth shadows */
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 1px 3px rgba(0, 217, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  
   z-index: 500;
   pointer-events: auto;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
-  backdrop-filter: blur(20px) saturate(150%);
+  
+  /* Liquid Glass: Smooth fluid transitions */
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Liquid Glass: Enhanced blur for glass refraction */
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  
   text-align: center;
   opacity: 1;
   display: block;
@@ -274,21 +307,22 @@ body.side-panel-open .side-panel-content {
 }
 
 .tooltip-title {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: var(--font-weight-bold);
   color: var(--color-glow-primary);
-  margin: 0;
-  line-height: 1.1;
-  letter-spacing: 0.3px;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .tooltip-subtitle {
-  font-size: 9px;
-  color: rgba(0, 217, 255, 0.65);
-  margin: 2px 0 0 0;
-  line-height: 1.1;
+  font-size: 11px;
+  color: rgba(0, 217, 255, 0.8);
+  margin: 0;
+  line-height: 1.3;
   font-style: italic;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .tooltip-paths {
