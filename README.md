@@ -18,6 +18,52 @@ This is not a gamified point-chasing app—it's a **living spellbook** that help
 
 ---
 
+## 📸 Screenshots
+
+### Desktop View
+
+<table>
+<tr>
+<td width="50%">
+
+**Cover Screen**
+
+![Desktop Cover View](screenshots/desktop_cover_view.png)
+
+</td>
+<td width="50%">
+
+**Hub/Main View**
+
+![Desktop Hub View](screenshots/desktop_hub_view.png)
+
+</td>
+</tr>
+</table>
+
+### Mobile View
+
+<table>
+<tr>
+<td width="50%">
+
+**Cover Screen**
+
+![Mobile Cover View](screenshots/mobile_cover_view.png)
+
+</td>
+<td width="50%">
+
+**Hub/Main View**
+
+![Mobile Hub View](screenshots/mobile_hub_view.png)
+
+</td>
+</tr>
+</table>
+
+---
+
 ## 🎯 Target Audience
 
 **Age Range:** 13+ (8th grade through adult re-learners)
@@ -202,7 +248,7 @@ Lessons are tracked in `client/JS/data/lessons_level1.js` with:
 
 ### Three-Tier Navigation
 
-1. **Cover State** - Opening screen with book-like aesthetic
+1. **Cover State** - Opening screen with 3D orb animation and the title "Grimora: A Living SpellBook"
 2. **Main View** - Animated background sigil with book spine button
 3. **Side Panel** - Clean, minimalist panel with four Hall sigils and interactive hover detection
 
@@ -221,6 +267,7 @@ Lessons are tracked in `client/JS/data/lessons_level1.js` with:
   - Subtle gradient overlay and edge lensing for premium feel
 
 - **Pointer Feedback** - Cursor changes to pointer only when hovering over interactive sigils
+- **Help Icon** - Displays a tooltip and opens an information panel with guidance on using the app.
 
 ### Design Details
 
@@ -316,6 +363,7 @@ Please review the primers in `/Primers/A_Primers/` before contributing to unders
 ## 📞 Contact
 
 **Repository:** [github.com/Olu-AnuAkin-Akinyemi/Grimora](https://github.com/Olu-AnuAkin-Akinyemi/Grimora)
+**Email:** olutakinyemi@gmail.com
 
 ---
 
