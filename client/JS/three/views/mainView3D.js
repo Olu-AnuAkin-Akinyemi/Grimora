@@ -35,12 +35,12 @@ export class MainView3D {
     try {
       this.backgroundSigil = BackgroundGeometry.create({
         size: 3.5,
-        color: 0x00d9ff,
+        color: 0x88dd66,  // Warm yellow-green (was 0x00d9ff)
         mobile: isMobile
       });
     } catch (error) {
       console.warn('[MainView3D] Using fallback geometry:', error);
-      this.backgroundSigil = BackgroundGeometry.createFallback(3.5, 0x00d9ff);
+      this.backgroundSigil = BackgroundGeometry.createFallback(3.5, 0x88dd66);
     }
 
     this.backgroundSigil.position.set(0, 0, -2); // Push back for background effect

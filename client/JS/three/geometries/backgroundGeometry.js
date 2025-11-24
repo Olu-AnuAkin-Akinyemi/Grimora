@@ -29,20 +29,65 @@ export class BackgroundGeometry {
 
     const group = new THREE.Group();
 
-    // === OPTION 1: GLOWING CORE SPHERE (ACTIVE - DRAGGABLE) ===
-    // The only element - a slowly pulsating glowing sphere
-    const coreGeometry = new THREE.IcosahedronGeometry(size * 0.35, mobile ? 1 : 2);
+    // === GLOWING CORE SPHERE ===
+    // Optimization: Use even simpler geometry on mobile
+    const detail = mobile ? 0 : 1; // Lower detail on mobile
+    const coreGeometry = new THREE.IcosahedronGeometry(size * 0.35, detail);
     const coreMaterial = createGlowMaterial({
       color: color,
       intensity: 1.2,
       pulse: true,
-      pulseSpeed: 0.3  // Slower pulse for calm effect
+      pulseSpeed: 0.3
     });
     const core = new THREE.Mesh(coreGeometry, coreMaterial);
+    core.frustumCulled = true; // Optimization: enable frustum culling
     group.add(core);
+
+    // === PARTICLES WITH GREEN/CYAN GRADIENT ===
+    const particleCount = 8; // Reduced from 20
+    const particles = [];
+    
+    for (let i = 0; i < particleCount; i++) {
+      // Gradient from green to cyan
+      const t = i / particleCount;
+      const particleColor = new THREE.Color();
+      particleColor.lerpColors(
+        new THREE.Color(0x00ff88), // Green
+        new THREE.Color(0x00d9ff), // Cyan
+        t
+      );
+      
+      const particleGeometry = new THREE.CircleGeometry(size * 0.02, 6);
+      const particleMaterial = new THREE.MeshBasicMaterial({
+        color: particleColor,
+        transparent: true,
+        opacity: 0.6,
+        blending: THREE.AdditiveBlending
+      });
+      
+      const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+      particle.frustumCulled = true; // Optimization
+      
+      // Random position in sphere
+      const radius = size * 0.5;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      
+      particle.userData = {
+        baseRadius: radius,
+        theta: theta,
+        phi: phi,
+        speed: 0.2 + Math.random() * 0.3,
+        offset: Math.random() * Math.PI * 2
+      };
+      
+      particles.push(particle);
+      group.add(particle);
+    }
 
     // Store references for animation
     group.userData.core = core;
+    group.userData.particles = particles;
     group.userData.isMobile = mobile;
     group.userData.baseColor = new THREE.Color(color);
 
@@ -117,27 +162,47 @@ export class BackgroundGeometry {
   }
 
   /**
-   * Animate the glowing orb (draggable mode - no auto-rotation).
+   * Animate the glowing orb with particles.
    * Call this in the update loop.
    *
    * @param {THREE.Group} group - The group returned by create()
    * @param {number} delta - Time since last frame
    */
   static animate(group, delta) {
-    const { core } = group.userData;
-
-    // === OPTION 1: ORIGINAL ORB ANIMATION (ACTIVE - DRAGGABLE, NO AUTO-ROTATION) ===
-    // Removed auto-rotation - user can drag to rotate the orb
-    // The icosahedron shape will be visible when rotated
+    const { core, particles } = group.userData;
 
     // Subtle breathing/pulsing effect on the entire orb
     const time = Date.now() * 0.0003;
-    const breathe = 1 + Math.sin(time) * 0.06; // 6% breathe/pulse
+    const breathe = 1 + Math.sin(time) * 0.06;
     const baseScale = group.scale.x || 1;
 
-    // Don't override scale if it's being animated by transitions
     if (baseScale >= 0.9 && baseScale <= 1.1) {
       group.scale.set(breathe, breathe, breathe);
+    }
+
+    // Animate particles orbiting around the orb
+    if (particles) {
+      particles.forEach(particle => {
+        const data = particle.userData;
+        const t = time + data.offset;
+        
+        // Orbital motion
+        const theta = data.theta + t * data.speed;
+        const phi = data.phi + Math.sin(t * 0.5) * 0.2; // Subtle up/down wave
+        
+        const x = data.baseRadius * Math.sin(phi) * Math.cos(theta);
+        const y = data.baseRadius * Math.sin(phi) * Math.sin(theta);
+        const z = data.baseRadius * Math.cos(phi);
+        
+        particle.position.set(x, y, z);
+        
+        // Rotate particle to face camera
+        particle.lookAt(0, 0, 0);
+        
+        // Subtle pulse
+        const pulse = 0.8 + Math.sin(t * 2 + data.offset) * 0.2;
+        particle.material.opacity = pulse * 0.6;
+      });
     }
   }
 

@@ -65,9 +65,9 @@ export class HubView3D {
     // Add lighting for the sigils
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
     this.scene.add(ambientLight);
-    
-    const pointLight = new THREE.PointLight(0x00d9ff, 1, 50);
-    pointLight.position.set(0, 5, 10);
+    // Warm green point light (was cyan)
+    const pointLight = new THREE.PointLight(0x88dd66, 1, 50);
+    pointLight.position.set(5, 5, 5);
     this.scene.add(pointLight);
     
     // Create Hall sigils

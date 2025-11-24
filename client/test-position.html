@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Position Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0d0d0d;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .view-state {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
+    #cover-view {
+      position: relative;
+      align-items: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .cover-content {
+      position: absolute;
+      bottom: 20vh;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 600px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      background: rgba(255, 0, 0, 0.1);
+      /* Red tint for visibility */
+      border: 2px solid red;
+      z-index: 10;
+      padding: 20px;
+    }
+
+    .test-text {
+      color: white;
+      font-size: 24px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="view-state">
+    <div id="cover-view">
+      <div class="cover-content">
+        <div class="test-text">TEST: This should be 20vh from bottom</div>
+        <div class="test-text" style="font-size: 14px;">If you see this in the middle, there's a CSS conflict</div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

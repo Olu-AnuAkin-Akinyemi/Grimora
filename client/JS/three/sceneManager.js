@@ -105,9 +105,9 @@ export class SceneManager {
     const ambient = new THREE.AmbientLight(0x404040, 0.5);
     this.scene.add(ambient);
     
-    // Main key light (bluish cyan to match glow aesthetic)
-    const keyLight = new THREE.PointLight(0x00d9ff, 1.5, 100);
-    keyLight.position.set(5, 5, 5);
+    // Key light (warm green, was cyan)
+    const keyLight = new THREE.PointLight(0x88dd66, 1.5, 100);
+    keyLight.position.set(10, 10, 10);
     keyLight.castShadow = !this.isMobile;
     this.scene.add(keyLight);
     

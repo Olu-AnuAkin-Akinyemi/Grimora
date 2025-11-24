@@ -12,51 +12,96 @@ button {
 }
 
 /* Primary button with glow */
+/* Primary button (Glass + Ultra-Subtle Cyan Tint) */
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-glow-secondary), var(--color-glow-primary));
-  color: var(--color-bg-deep);
-  font-size: var(--text-lg);
-  font-weight: var(--font-weight-bold);
-  padding: var(--space-4) var(--space-8);
-  box-shadow: var(--glow-sm);
+  background: rgba(0, 217, 255, 0.02);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 217, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-3) var(--space-8);
+  box-shadow: 0 4px 24px -1px rgba(0, 217, 255, 0.05);
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* CTA button with transparent background */
-.cta-primary {
-  background: transparent;
-  color: var(--glow-cyan);
-  border: 2px solid var(--glow-cyan);
-  font-size: var(--text-lg);
-  font-weight: var(--font-weight-bold);
-  padding: var(--space-4) var(--space-8);
-  box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.cta-primary:hover {
-  background: rgba(0, 217, 255, 0.2);
-  color: var(--text-light);
-  box-shadow: 0 0 30px var(--glow-cyan);
-  transform: translateY(-2px);
+.btn-primary:hover {
+  background: rgba(0, 217, 255, 0.15);
+  border-color: rgba(0, 217, 255, 0.5);
+  color: #fff;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 40px -1px rgba(0, 217, 255, 0.3);
 }
 
 .btn-primary:active {
-  transform: translateY(0);
-  box-shadow: var(--glow-sm);
+  transform: translateY(-1px) scale(0.98);
+  background: rgba(0, 217, 255, 0.1);
+  transition: all 0.1s ease;
 }
 
-/* Secondary button (ghost style) */
+/* Secondary button (subtler glass) */
 .btn-secondary {
   background: transparent;
-  color: var(--color-glow-primary);
-  border: 1px solid var(--color-glow-primary);
+  color: var(--color-text-secondary);
+  border: 1px solid transparent;
   font-size: var(--text-base);
+  padding: var(--space-3) var(--space-6);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-secondary:hover {
-  background: rgba(0, 217, 255, 0.1);
-  box-shadow: var(--glow-sm);
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  transform: translateY(-2px);
+}
+
+/* Icon-only buttons (circular with glass background) */
+.btn-icon-only {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  position: relative; /* For 3D container */
+  
+  /* Glass background */
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.03); /* Nearly invisible */
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.btn-icon-only:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.08); /* Subtle reveal on hover */
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.icon-3d-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.btn-icon-only .btn-icon {
+  margin: 0;
 }
 
 .btn-icon {
@@ -161,23 +206,20 @@ body.side-panel-open .book-spine-btn {
   overflow: hidden;
   box-sizing: border-box;
   
-  /* Liquid Glass: Enhanced refraction */
-  -webkit-backdrop-filter: blur(80px) saturate(180%);
-  backdrop-filter: blur(80px) saturate(180%);
+  /* Minimal glass (match cover aesthetic) */
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   
-  /* Liquid Glass: Subtle multi-layer background for depth */
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%),
-    rgba(8, 8, 8, 0.95);
+  /* Simplified background */
+  background: rgba(8, 8, 8, 0.95);
   
-  /* Liquid Glass: Refined edge with subtle glow */
-  border-left: 1px solid rgba(0, 217, 255, 0.4);
+  /* Minimal border with warm glow */
+  border-left: 1px solid rgba(136, 221, 102, 0.15);
   
-  /* Liquid Glass: Enhanced depth shadows */
+  /* Simplified shadows */
   box-shadow: 
     -10px 0 40px rgba(0, 0, 0, 0.5),
-    -2px 0 8px rgba(0, 217, 255, 0.2),
-    inset 1px 0 0 rgba(255, 255, 255, 0.08);
+    -2px 0 8px rgba(136, 221, 102, 0.1);
   
   transform: translateX(100%);
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -258,42 +300,40 @@ body.side-panel-open .side-panel-content {
   pointer-events: auto;
 }
 
-/* ===== HALL TOOLTIP (Liquid Glass Effect) ===== */
+/* ===== HALL TOOLTIP (Match Cover Aesthetic Exactly) ===== */
 .hall-tooltip {
   position: fixed;
   
-  /* Liquid Glass: Subtle multi-layer background for depth */
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%),
-    rgba(20, 30, 40, 0.75);
-  
-  /* Liquid Glass: Subtle edge lensing */
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
+  /* Match cover glass background */
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
   
   padding: var(--space-2) var(--space-3);
-  min-width: auto;
-  max-width: 180px;
-  width: 180px;
+  min-width: 120px; /* Further reduced width */
+  max-width: 160px; /* Further reduced max-width */
+  width: auto;
   
-  /* Liquid Glass: Refined depth shadows */
+  /* Minimal shadows */
   box-shadow: 
-    0 8px 24px rgba(0, 0, 0, 0.3),
-    0 1px 3px rgba(0, 217, 255, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   
   z-index: 500;
   pointer-events: auto;
   
-  /* Liquid Glass: Smooth fluid transitions */
+  /* Smooth transitions */
   transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
               transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* Liquid Glass: Enhanced blur for glass refraction */
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  backdrop-filter: blur(40px) saturate(180%);
-  
+  /* Typography matching cover-tooltip */
   text-align: center;
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  color: rgba(255, 255, 255, 0.9);
+  
   opacity: 1;
   display: block;
   visibility: visible;
@@ -302,43 +342,89 @@ body.side-panel-open .side-panel-content {
 .hall-tooltip.hidden {
   opacity: 0;
   pointer-events: none;
-  transform: scale(0.95);
+  transform: scale(0.95) translateY(5px);
+  visibility: hidden;
+}
+
+/* ===== COVER TOOLTIPS (Restored) ===== */
+.cover-tooltip {
+  position: fixed;
+  
+  /* Match button glass background */
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  
+  padding: var(--space-2) var(--space-3);
+  
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  
+  z-index: 500;
+  pointer-events: none;
+  
+  /* Smooth transitions */
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  text-align: center;
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  
+  opacity: 1;
+  display: block;
+  visibility: visible;
+}
+
+.cover-tooltip.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95) translateY(5px);
   visibility: hidden;
 }
 
 .tooltip-title {
   font-size: 13px;
   font-weight: var(--font-weight-bold);
-  color: var(--color-glow-primary);
-  margin: 0 0 4px 0;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0 0 2px 0;
   line-height: 1.2;
   letter-spacing: 0.5px;
   text-transform: uppercase;
+  text-shadow: none;
 }
 
 .tooltip-subtitle {
   font-size: 11px;
-  color: rgba(0, 217, 255, 0.8);
-  margin: 0;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 0 var(--space-2) 0;
   line-height: 1.3;
-  font-style: italic;
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
+  font-style: normal;
 }
 
 .tooltip-paths {
-  display: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 0; /* Removed bottom margin since button is gone */
+  justify-content: center;
 }
 
 .tooltip-paths .path-tag {
-  display: none;
-}
-
-.tooltip-enter-btn {
-  display: none;
-}
-
-.tooltip-enter-btn:hover {
-  display: none;
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  white-space: nowrap;
 }
 
 /* ===== HALL CARDS ===== */
@@ -417,7 +503,7 @@ body.side-panel-open .side-panel-content {
   justify-content: center;
 }
 
-.path-tag {
+.hall-paths .path-tag {
   font-size: var(--text-xs);
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-full);

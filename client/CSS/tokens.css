@@ -11,14 +11,15 @@
   --color-text-secondary: #a0a0a0;
   --color-text-muted: #707070;
   
-  --color-glow-primary: #00d9ff;
-  --color-glow-secondary: #00a3cc;
-  --color-glow-accent: #7df9ff;
+  /* Warm earth tone palette (updated from cyan) */
+  --color-glow-primary: #88dd66;      /* Warm yellow-green */
+  --color-glow-secondary: #66ccaa;    /* Warm teal */
+  --color-glow-accent: #a0ee88;       /* Lighter variant */
   
-  --color-math: #00d9ff;
-  --color-chem: #ff6b35;
-  --color-lore: #ffd700;
-  --color-physeng: #00ff88;
+  --color-math: #88dd66;              /* Warm green */
+  --color-chem: #ff6b35;              /* Orange (unchanged) */
+  --color-lore: #ffd700;              /* Gold (unchanged) */
+  --color-physeng: #66ccaa;           /* Warm teal */
   
   /* Typography */
   --font-primary: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;

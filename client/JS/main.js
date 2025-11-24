@@ -10,6 +10,8 @@ import { CoverView3D } from './three/views/coverView3D.js';
 import { MainView3D } from './three/views/mainView3D.js';
 import { HubView3D } from './three/views/hubView3D.js';
 import { Commander } from './app/commander.js';
+import { CoverTooltips } from './app/coverTooltips.js';
+import { IconButton3D } from './three/components/IconButton3D.js';
 
 /**
  * Initialize the Grimora application
@@ -40,13 +42,37 @@ async function init() {
     const commander = new Commander();
     commander.init(sceneManager, coverView, mainView, hubView);
     
+    // Initialize cover tooltips
+    const coverTooltips = new CoverTooltips();
+    
+    // Initialize 3D icon buttons with distinct colors
+    const iconOpen = new IconButton3D('icon-3d-open', 0x88dd66);      // Warm yellow-green (matches orb core)
+    const iconSignIn = new IconButton3D('icon-3d-signin', 0x66ccaa);  // Warm teal (complementary variant)
+    
+    // Wire up hover events
+    const btnOpen = document.getElementById('open-grimora-btn');
+    const btnSignIn = document.getElementById('sign-in-btn');
+    
+    if (btnOpen && iconOpen) {
+      btnOpen.addEventListener('mouseenter', () => iconOpen.setHovered(true));
+      btnOpen.addEventListener('mouseleave', () => iconOpen.setHovered(false));
+    }
+    
+    if (btnSignIn && iconSignIn) {
+      btnSignIn.addEventListener('mouseenter', () => iconSignIn.setHovered(true));
+      btnSignIn.addEventListener('mouseleave', () => iconSignIn.setHovered(false));
+    }
+    
     // Store globally for debugging (remove in production)
     window.Grimora = {
       sceneManager,
       coverView,
       mainView,
       hubView,
-      commander
+      commander,
+      coverTooltips,
+      iconOpen,
+      iconSignIn
     };
     
     console.log('✨ Grimora initialized successfully');

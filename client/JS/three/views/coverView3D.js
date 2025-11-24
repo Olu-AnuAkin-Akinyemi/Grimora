@@ -68,19 +68,15 @@ export class CoverView3D {
     try {
       this.centralSigil = BackgroundGeometry.create({
         size: 2.5,
-        color: 0x00d9ff,
+        color: 0x88dd66, // Warm yellow-green to complement cyan particles
         mobile: isMobile
       });
     } catch (error) {
       console.warn('[CoverView3D] Using fallback geometry:', error);
-      this.centralSigil = BackgroundGeometry.createFallback(2.5, 0x00d9ff);
+      this.centralSigil = BackgroundGeometry.createFallback(2.5, 0x88dd66);
     }
     this.centralSigil.position.set(0, 0, 0.6);
     this.group.add(this.centralSigil);
-
-    // Enable drag-to-rotate interaction
-    const canvas = this.sceneManager.renderer.domElement;
-    BackgroundGeometry.enableDragRotation(this.centralSigil, canvas);
 
     // Position group
     this.group.position.set(0, 0, 0);
@@ -95,8 +91,8 @@ export class CoverView3D {
   addBookTitle() {
     // Simple geometric representation of "GRIMORA"
     const glowMat = createStoneMaterial({ 
-      color: 0x00d9ff,
-      emissive: 0x00d9ff,
+      color: 0x88dd66,      // Warm green (was 0x00d9ff)
+      emissive: 0x88dd66,
       emissiveIntensity: 0.3 
     });
     
