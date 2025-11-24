@@ -8,14 +8,22 @@ import { createGlowMaterial } from '../materials/glowMaterial.js';
  * Optimized for performance
  */
 export class IconButton3D {
-  constructor(containerId, color = 0x00d9ff) {
+  constructor(containerId, configOrColor) {
     this.container = document.getElementById(containerId);
     if (!this.container) {
       console.warn(`[IconButton3D] Container not found: ${containerId}`);
       return;
     }
 
-    this.color = color;
+    // Handle config object or legacy color argument
+    if (typeof configOrColor === 'object') {
+      this.config = configOrColor;
+      this.color = this.config.color || 0x00d9ff;
+    } else {
+      this.config = { type: 'glyph' };
+      this.color = configOrColor || 0x00d9ff;
+    }
+
     this.isHovered = false;
     this.time = 0;
 
@@ -24,7 +32,7 @@ export class IconButton3D {
 
   init() {
     // Create mini scene
-    const size = 60; // Match button size
+    const size = this.config.containerSize || 60; // Configurable size, default 60px
     this.scene = new THREE.Scene();
     
     // Camera
@@ -38,7 +46,7 @@ export class IconButton3D {
     // Renderer
     this.renderer = new THREE.WebGLRenderer({
       alpha: true,
-      antialias: false // Optimization
+      antialias: true // Enable antialias for smoother images
     });
     this.renderer.setSize(size, size);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap at 2x
@@ -57,8 +65,12 @@ export class IconButton3D {
       pulse: false
     });
 
-    // Central rotating glyph (always visible)
-    this.createGlyph();
+    // Create Icon based on type
+    if (this.config.type === 'image' && this.config.texturePath) {
+      this.createImageIcon(this.config.texturePath);
+    } else {
+      this.createGlyph();
+    }
 
     // Particle ring (hover only)
     this.createParticles();
@@ -67,11 +79,31 @@ export class IconButton3D {
     this.animate();
   }
 
+  createImageIcon(path) {
+    const loader = new THREE.TextureLoader();
+    loader.load(path, (texture) => {
+      // Create a plane for the image
+      const iconSize = this.config.size || 24; // Default to smaller size (was 32)
+      const geometry = new THREE.PlaneGeometry(iconSize, iconSize);
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        opacity: 0.9,
+        color: 0xffffff, // Tint if needed, or keep white
+        blending: this.config.blending || THREE.NormalBlending,
+        depthWrite: false
+      });
+      
+      this.iconMesh = new THREE.Mesh(geometry, material);
+      this.scene.add(this.iconMesh);
+    });
+  }
+
   createGlyph() {
     // Simple low-poly icosahedron (12 vertices)
     const geometry = new THREE.IcosahedronGeometry(8, 0);
-    this.glyph = new THREE.Mesh(geometry, this.glowMaterial);
-    this.scene.add(this.glyph);
+    this.iconMesh = new THREE.Mesh(geometry, this.glowMaterial);
+    this.scene.add(this.iconMesh);
   }
 
   createParticles() {
@@ -106,9 +138,20 @@ export class IconButton3D {
 
     this.time += 0.016; // ~60fps
 
-    // Rotate glyph slower and more subtly
-    this.glyph.rotation.x += 0.003; // Reduced from 0.01
-    this.glyph.rotation.y += 0.005; // Reduced from 0.015
+    // Animate icon mesh only on hover
+    if (this.iconMesh && this.isHovered) {
+      if (this.config.type === 'image') {
+        // Very subtle float for image icons on hover only
+        this.iconMesh.position.y = Math.sin(this.time * 1.5) * 0.5;
+      } else {
+        // Subtle rotation for glyph icons on hover only
+        this.iconMesh.rotation.x += 0.002;
+        this.iconMesh.rotation.y += 0.003;
+      }
+    } else if (this.iconMesh) {
+      // Reset position when not hovered
+      this.iconMesh.position.y *= 0.9; // Smooth return to center
+    }
 
     // Animate particles (only on hover)
     if (this.isHovered) {

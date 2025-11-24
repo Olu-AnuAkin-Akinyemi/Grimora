@@ -40,6 +40,18 @@
     <!-- Cover State: First screen (closed book) -->
     <section id="cover-view" class="view-state active" data-view="cover">
       <div class="cover-content">
+        <!-- Settings button in top left -->
+        <button id="settings-btn" class="btn-secondary btn-icon-only cover-corner-btn cover-settings-btn"
+          data-tooltip="cover-tooltip-settings">
+          <div id="icon-3d-settings" class="icon-3d-container"></div>
+        </button>
+
+        <!-- Help button in top right -->
+        <button id="help-btn" class="btn-secondary btn-icon-only cover-corner-btn cover-help-btn"
+          data-tooltip="cover-tooltip-help">
+          <div id="icon-3d-help" class="icon-3d-container"></div>
+        </button>
+
         <!-- Text at top -->
         <div class="cover-text-group">
           <h1 class="grimora-title">
@@ -61,6 +73,14 @@
       </div>
 
       <!-- Custom tooltips for cover buttons (outside cover-content) -->
+      <div id="cover-tooltip-settings" class="cover-tooltip hidden">
+        Settings
+      </div>
+
+      <div id="cover-tooltip-help" class="cover-tooltip hidden">
+        About Grimora
+      </div>
+
       <div id="cover-tooltip-open" class="cover-tooltip hidden">
         Open
       </div>
@@ -68,10 +88,55 @@
       <div id="cover-tooltip-signin" class="cover-tooltip hidden">
         Sign In / Sign Up
       </div>
+
+      <!-- Info Panel -->
+      <div id="info-panel" class="info-panel hidden">
+        <button class="info-panel-close" aria-label="Close">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="1" y1="1" x2="13" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <line x1="13" y1="1" x2="1" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+        <div class="info-panel-content">
+          <h3 class="info-panel-title">Welcome to Grimora</h3>
+          <div class="info-panel-text">
+            <p><strong>Your Living Spellbook</strong></p>
+            <p>Grimora is an interactive learning companion that brings STEM education to life through magical
+              storytelling.</p>
+
+            <p><strong>Getting Started</strong></p>
+            <p>If you've signed up, click "Open" to begin your journey through the Halls of Knowledge:</p>
+            <ul>
+              <li><strong>Hall of Maat</strong> - History & Lore</li>
+              <li><strong>Math Sanctum</strong> - Mathematics & Logic</li>
+              <li><strong>Matter Lab</strong> - Chemistry & Science</li>
+              <li><strong>Machina Workshop</strong> - Physics & Engineering</li>
+            </ul>
+
+            <p><strong>Sign Up</strong></p>
+            <p>Create an account to save your progress and sync across devices.</p>
+
+            <p><strong>Navigation</strong></p>
+            <p>Use the book spine button on the right edge to access the Halls menu at any time.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Main View: Background sigil with book spine button -->
     <section id="main-view" class="view-state" data-view="main">
+      <!-- Settings button in top left -->
+      <button id="settings-btn-main" class="btn-secondary btn-icon-only cover-corner-btn cover-settings-btn"
+        data-tooltip="cover-tooltip-settings">
+        <div id="icon-3d-settings-main" class="icon-3d-container"></div>
+      </button>
+
+      <!-- Help button in top right -->
+      <button id="help-btn-main" class="btn-secondary btn-icon-only cover-corner-btn cover-help-btn"
+        data-tooltip="cover-tooltip-help">
+        <div id="icon-3d-help-main" class="icon-3d-container"></div>
+      </button>
+
       <!-- THREE.js background sigil renders here -->
 
       <!-- Book spine button (fixed to right edge) -->
@@ -110,9 +175,9 @@
     <div class="modal-overlay" aria-hidden="true"></div>
     <div class="modal-content">
       <button class="modal-close" aria-label="Close">×</button>
-      <h2 id="auth-modal-title" class="modal-title">Sign In to Save Progress</h2>
+      <h2 id="auth-modal-title" class="modal-title">Sign In to Continue</h2>
       <p class="modal-description">
-        Connect your account to preserve your journey through Grimora.
+        Connect your account to continue your journey through Grimora.
       </p>
 
       <div class="auth-options">
@@ -133,7 +198,7 @@
   </div>
 
   <!-- Main JS (ES6 modules) -->
-  <script type="module" src="JS/main.js"></script>
+  <script type="module" src="JS/main.js?v=49"></script>
 </body>
 
 </html>

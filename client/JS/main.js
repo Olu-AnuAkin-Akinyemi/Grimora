@@ -5,13 +5,14 @@
  * Initializes THREE.js scene, views, and app orchestration.
  */
 
+import * as THREE from 'three';
 import { SceneManager } from './three/sceneManager.js';
 import { CoverView3D } from './three/views/coverView3D.js';
 import { MainView3D } from './three/views/mainView3D.js';
 import { HubView3D } from './three/views/hubView3D.js';
 import { Commander } from './app/commander.js';
 import { CoverTooltips } from './app/coverTooltips.js';
-import { IconButton3D } from './three/components/IconButton3D.js';
+import { IconButton3D } from './three/components/IconButton3D.js?v=40';
 
 /**
  * Initialize the Grimora application
@@ -46,12 +47,63 @@ async function init() {
     const coverTooltips = new CoverTooltips();
     
     // Initialize 3D icon buttons with distinct colors
-    const iconOpen = new IconButton3D('icon-3d-open', 0x88dd66);      // Warm yellow-green (matches orb core)
-    const iconSignIn = new IconButton3D('icon-3d-signin', 0x66ccaa);  // Warm teal (complementary variant)
+    const iconOpen = new IconButton3D('icon-3d-open', { 
+      type: 'image', 
+      texturePath: 'assets/book.svg',
+      color: 0x88dd66,
+      size: 18 // Even smaller, minimal size
+    });
     
-    // Wire up hover events
+    const iconSignIn = new IconButton3D('icon-3d-signin', { 
+      type: 'image', 
+      texturePath: 'assets/user.svg',
+      color: 0x66ccaa,
+      size: 18, // Even smaller, minimal size
+      blending: THREE.AdditiveBlending 
+    });
+
+    const iconSettings = new IconButton3D('icon-3d-settings', { 
+      type: 'image', 
+      texturePath: 'assets/settings.svg',
+      color: 0x9999ff,
+      size: 14, // Smaller icon
+      containerSize: 45 // Smaller button size
+    });
+
+    const iconHelp = new IconButton3D('icon-3d-help', { 
+      type: 'image', 
+      texturePath: 'assets/help.svg',
+      color: 0x66ddff,
+      size: 14, // Smaller icon
+      containerSize: 45 // Smaller button size
+    });
+
+    // Main view instances (same icons)
+    const iconSettingsMain = new IconButton3D('icon-3d-settings-main', { 
+      type: 'image', 
+      texturePath: 'assets/settings.svg',
+      color: 0x9999ff,
+      size: 14,
+      containerSize: 45
+    });
+
+    const iconHelpMain = new IconButton3D('icon-3d-help-main', { 
+      type: 'image', 
+      texturePath: 'assets/help.svg',
+      color: 0x66ddff,
+      size: 14,
+      containerSize: 45
+    });
+    
+    // Wire up hover events for cover view
     const btnOpen = document.getElementById('open-grimora-btn');
     const btnSignIn = document.getElementById('sign-in-btn');
+    const btnSettings = document.getElementById('settings-btn');
+    const btnHelp = document.getElementById('help-btn');
+
+    // Wire up hover events for main view
+    const btnSettingsMain = document.getElementById('settings-btn-main');
+    const btnHelpMain = document.getElementById('help-btn-main');
     
     if (btnOpen && iconOpen) {
       btnOpen.addEventListener('mouseenter', () => iconOpen.setHovered(true));
@@ -61,6 +113,74 @@ async function init() {
     if (btnSignIn && iconSignIn) {
       btnSignIn.addEventListener('mouseenter', () => iconSignIn.setHovered(true));
       btnSignIn.addEventListener('mouseleave', () => iconSignIn.setHovered(false));
+    }
+
+    if (btnSettings && iconSettings) {
+      btnSettings.addEventListener('mouseenter', () => iconSettings.setHovered(true));
+      btnSettings.addEventListener('mouseleave', () => iconSettings.setHovered(false));
+    }
+
+    if (btnHelp && iconHelp) {
+      btnHelp.addEventListener('mouseenter', () => iconHelp.setHovered(true));
+      btnHelp.addEventListener('mouseleave', () => iconHelp.setHovered(false));
+    }
+
+    if (btnSettingsMain && iconSettingsMain) {
+      btnSettingsMain.addEventListener('mouseenter', () => iconSettingsMain.setHovered(true));
+      btnSettingsMain.addEventListener('mouseleave', () => iconSettingsMain.setHovered(false));
+    }
+
+    if (btnHelpMain && iconHelpMain) {
+      btnHelpMain.addEventListener('mouseenter', () => iconHelpMain.setHovered(true));
+      btnHelpMain.addEventListener('mouseleave', () => iconHelpMain.setHovered(false));
+    }
+
+    // Info panel functionality
+    const infoPanel = document.getElementById('info-panel');
+    const infoPanelClose = document.querySelector('.info-panel-close');
+    const helpTooltip = document.getElementById('cover-tooltip-help');
+
+    // Both help buttons should toggle the same panel
+    const setupHelpButton = (btn) => {
+      if (!btn) return;
+      
+      btn.addEventListener('click', () => {
+        infoPanel.classList.toggle('hidden');
+        
+        // Hide tooltip when panel opens
+        if (!infoPanel.classList.contains('hidden') && helpTooltip) {
+          helpTooltip.classList.add('hidden');
+        }
+      });
+    };
+
+    if (infoPanel) {
+      setupHelpButton(btnHelp);
+      setupHelpButton(btnHelpMain);
+
+      // Close on close button click
+      if (infoPanelClose) {
+        infoPanelClose.addEventListener('click', () => {
+          infoPanel.classList.add('hidden');
+        });
+      }
+
+      // Close on click outside
+      document.addEventListener('click', (e) => {
+        if (!infoPanel.classList.contains('hidden') &&
+            !infoPanel.contains(e.target) &&
+            !btnHelp?.contains(e.target) &&
+            !btnHelpMain?.contains(e.target)) {
+          infoPanel.classList.add('hidden');
+        }
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !infoPanel.classList.contains('hidden')) {
+          infoPanel.classList.add('hidden');
+        }
+      });
     }
     
     // Store globally for debugging (remove in production)
@@ -72,7 +192,11 @@ async function init() {
       commander,
       coverTooltips,
       iconOpen,
-      iconSignIn
+      iconSignIn,
+      iconSettings,
+      iconHelp,
+      iconSettingsMain,
+      iconHelpMain
     };
     
     console.log('✨ Grimora initialized successfully');

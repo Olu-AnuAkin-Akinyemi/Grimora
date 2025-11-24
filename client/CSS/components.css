@@ -108,6 +108,147 @@ button {
   margin-right: var(--space-2);
 }
 
+/* ===== COVER CORNER BUTTONS (SHARED) ===== */
+.cover-corner-btn {
+  position: fixed;
+  top: 2rem;
+  z-index: 50;
+  width: 45px;
+  height: 45px;
+}
+
+/* ===== COVER SETTINGS BUTTON ===== */
+.cover-settings-btn {
+  left: 2rem;
+}
+
+/* ===== COVER HELP BUTTON ===== */
+.cover-help-btn {
+  right: 2rem;
+}
+
+/* ===== INFO PANEL ===== */
+.info-panel {
+  position: fixed;
+  top: 6rem;
+  right: 2rem;
+  width: min(380px, calc(100vw - 4rem));
+  max-height: calc(100vh - 8rem);
+  z-index: 100;
+  
+  /* Glass styling matching tooltips */
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  
+  /* Smooth transitions */
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  
+  display: flex;
+  flex-direction: column;
+}
+
+.info-panel.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.info-panel-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 1;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+}
+
+.info-panel-close:hover {
+  color: rgba(255, 255, 255, 1);
+  transform: rotate(90deg);
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
+}
+
+.info-panel-content {
+  padding: 1.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100%;
+}
+
+.info-panel-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0 0 1rem 0;
+  padding-right: 1.5rem; /* Space for smaller close button */
+}
+
+.info-panel-text {
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+.info-panel-text p {
+  margin: 0 0 0.75rem 0;
+}
+
+.info-panel-text strong {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: var(--font-weight-medium);
+}
+
+.info-panel-text ul {
+  margin: 0.5rem 0 1rem 1.25rem;
+  padding: 0;
+}
+
+.info-panel-text li {
+  margin: 0.5rem 0;
+}
+
+/* Scrollbar styling */
+.info-panel-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.info-panel-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.info-panel-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.info-panel-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 /* ===== SIGN IN BUTTON (MAIN VIEW) ===== */
 .sign-in-btn-main {
   position: fixed;
@@ -616,10 +757,48 @@ body.side-panel-open .side-panel-content {
     width: 80px;
     height: 80px;
   }
-  
-  .modal-content {
-    padding: var(--space-6);
+  /* Cover text scaling */
+  .cover-text-group {
+    margin-top: var(--space-1);
+  }
+
+  .grimora-title {
     margin: var(--space-4);
+  }
+  
+  /* Corner buttons on COVER view mobile - align with tagline to avoid title overlap */
+  #cover-view .cover-corner-btn {
+    top: auto;
+    bottom: calc(8vh + 3.75rem); /* Align with tagline vertically */
+  }
+  
+  #cover-view .cover-settings-btn {
+    left: 1rem;
+  }
+
+  #cover-view .cover-help-btn {
+    right: 1rem;
+  }
+
+  /* Corner buttons on MAIN/HUB view mobile - keep in top corners */
+  #main-view .cover-corner-btn {
+    top: 1rem;
+  }
+  
+  #main-view .cover-settings-btn {
+    left: 1rem;
+  }
+
+  #main-view .cover-help-btn {
+    right: 1rem;
+  }
+
+  /* Info panel mobile adjustments */
+  .info-panel {
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+    top: 5rem;
   }
 }
 
