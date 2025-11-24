@@ -352,11 +352,11 @@ Please review the primers in `/Primers/A_Primers/` before contributing to unders
 
 **Grimora** draws inspiration from:
 
-- Ancient Kemetic (Egyptian) wisdom and Ma'at philosophy
+- Kemetic (ancient Egyptian) wisdom and Ma'at philosophy
 - Historical alchemy and Khemia traditions
 - The classical Trivium and Quadrivium
 - Modern STEM education best practices
-- African-centered approaches to science and mathematics
+- "Holistic"-centered approaches to science and mathematics
 
 ---
 
