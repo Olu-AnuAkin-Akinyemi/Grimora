@@ -135,16 +135,88 @@ async function init() {
       btnHelpMain.addEventListener('mouseleave', () => iconHelpMain.setHovered(false));
     }
 
-    // Info panel functionality
+    // Info panel functionality with dynamic content
     const infoPanel = document.getElementById('info-panel');
     const infoPanelClose = document.querySelector('.info-panel-close');
     const helpTooltip = document.getElementById('cover-tooltip-help');
+    const panelTitle = document.querySelector('.info-panel-title');
+    const panelText = document.querySelector('.info-panel-text');
+
+    // Centralized help content for each view
+    const helpContent = {
+      cover: {
+        title: "Welcome to Grimora",
+        body: `
+          <p><strong>Your Living Spellbook</strong></p>
+          <p>Grimora is an interactive learning companion that brings STEM education to life through magical storytelling.</p>
+          
+          <p><strong>Getting Started</strong></p>
+          <p>If you've signed up, click "Open" to begin your journey through the Halls of Knowledge:</p>
+          <ul>
+            <li><strong>Hall of Maat</strong> - History & Lore</li>
+            <li><strong>Math Sanctum</strong> - Mathematics & Logic</li>
+            <li><strong>Matter Lab</strong> - Chemistry & Science</li>
+            <li><strong>Machina Workshop</strong> - Physics & Engineering</li>
+          </ul>
+          
+          <p><strong>Sign Up</strong></p>
+          <p>Create an account to save your progress and sync across devices.</p>
+          
+          <p><strong>Navigation</strong></p>
+          <p>Use the book spine button on the right edge to access the Halls menu at any time.</p>
+        `
+      },
+      main: {
+        title: "Navigating the Halls",
+        body: `
+          <p><strong>The Book Spine</strong></p>
+          <p>Click the spine button on the right edge of your screen to open the Halls menu. This button is always accessible, allowing you to switch between Halls at any time.</p>
+          
+          <p><strong>The Four Halls of Knowledge</strong></p>
+          
+          <p><strong>Hall of Maat</strong> - <em>History & Lore</em></p>
+          <p>Explore the rich tapestry of human history, cultural narratives, and timeless wisdom. Learn about ancient civilizations, mythology, and the stories that shaped our world.</p>
+          
+          <p><strong>Math Sanctum</strong> - <em>Mathematics & Logic</em></p>
+          <p>Master the language of numbers, patterns, and reasoning. From basic arithmetic to advanced calculus, develop your mathematical thinking and problem-solving skills.</p>
+          
+          <p><strong>Matter Lab</strong> - <em>Chemistry & Science</em></p>
+          <p>Discover the building blocks of our universe. Experiment with elements, compounds, and reactions. Understand the scientific method and the nature of matter itself.</p>
+          
+          <p><strong>Machina Workshop</strong> - <em>Physics & Engineering</em></p>
+          <p>Unlock the principles of motion, energy, and forces. Design, build, and understand the mechanics that power our modern world.</p>
+          
+          <p><strong>Your Progress</strong></p>
+          <p>Cards with a glowing border indicate Halls you've unlocked and can access. Complete lessons and challenges to unlock new Halls and advance your journey.</p>
+        `
+      }
+    };
+
+    // Get current active view
+    function getCurrentView() {
+      const activeView = document.querySelector('.view-state.active');
+      return activeView?.dataset.view || 'cover';
+    }
+
+    // Update panel content based on current view
+    function updateHelpPanel() {
+      const view = getCurrentView();
+      const content = helpContent[view] || helpContent.cover;
+      
+      if (panelTitle && panelText) {
+        panelTitle.textContent = content.title;
+        panelText.innerHTML = content.body;
+      }
+    }
 
     // Both help buttons should toggle the same panel
     const setupHelpButton = (btn) => {
       if (!btn) return;
       
       btn.addEventListener('click', () => {
+        // Update content before showing panel
+        updateHelpPanel();
+        
         infoPanel.classList.toggle('hidden');
         
         // Hide tooltip when panel opens
