@@ -122,15 +122,19 @@ This is not a gamified point-chasing app—it's a **living spellbook** that help
 
 ```text
 Grimora/
-├── client/                    # Front-end application
+├── package.json              # npm dependencies and scripts
+├── vite.config.js            # Vite + Vitest configuration
+│
+├── client/                    # Front-end application (Vite root)
 │   ├── index.html            # Entry point
 │   ├── CSS/                  # Stylesheets
 │   ├── JS/
 │   │   ├── app/              # Application orchestration
-│   │   ├── core/             # Pure logic (math, chemistry, progression)
-│   │   ├── ui/               # DOM rendering and views
+│   │   ├── __tests__/        # Vitest unit tests
+│   │   ├── three/            # THREE.js scenes, views, components
 │   │   └── data/             # Lesson metadata, tracks, halls, paths
-│   └── assets/               # Images, icons, diagrams
+│   └── public/               # Static assets (copied as-is to dist/)
+│       └── assets/           # Images, icons, 3D models, SVGs
 │
 ├── Content/                   # Lesson content (Markdown)
 │   └── Grimora_Level1/
@@ -156,6 +160,8 @@ Grimora/
 - **CSS3** - Styling and layout with backdrop-filter effects
 - **Vanilla JavaScript (ES6+)** - No frameworks, modular architecture
 - **THREE.js** - 3D visualization and animation
+- **Vite** - Dev server with HMR and optimized production builds
+- **Vitest** - Unit testing with jsdom environment
 - **JSDoc** - Comprehensive documentation
 - **JSON/JS modules** - Content and configuration data
 
@@ -187,36 +193,41 @@ Grimora/
 
 ### Prerequisites
 
-None! Just a modern web browser.
+- **Node.js 18+** — [nodejs.org](https://nodejs.org)
 
 ### Running Locally
 
-Clone the repository:
+Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/Olu-AnuAkin-Akinyemi/Grimora.git
 cd Grimora
+npm install
 ```
 
-Start an HTTP server:
+Start the Vite dev server:
 
 ```bash
-python3 -m http.server 8000
-# or: python -m http.server 8000 (for Python 2)
+npm run dev
+# Opens http://localhost:5173 automatically
 ```
 
-Open in browser:
+### Other Commands
 
 ```bash
-open http://localhost:8000/client/
+npm run build        # Production build → dist/
+npm run preview      # Preview the production build locally
+npm test             # Run tests in watch mode
+npm run test:run     # Run tests once (CI-friendly)
+npm run test:coverage  # Generate coverage report
 ```
 
 ### Development Notes
 
-- All code is vanilla JavaScript (ES6+ modules) with no build step required
-- Files are served fresh from disk; refresh your browser to see changes
-- Open browser DevTools (F12) to debug and check for console errors
+- Vite provides instant HMR — changes reflect in the browser without a manual refresh
 - THREE.js visualizations require WebGL support
+- Open browser DevTools (F12) to debug and check for console errors
+- Tests live in `client/JS/__tests__/` and run with Vitest + jsdom
 
 ---
 
@@ -318,6 +329,7 @@ Balance, truth, and order inform:
 ✅ UI/UX implementation with THREE.js visualization  
 ✅ Interactive Hall sigils with hover detection  
 ✅ Responsive side panel navigation  
+✅ Vite dev server + Vitest unit testing  
 🔄 Lesson page routing and content display in progress
 
 ### Future Levels

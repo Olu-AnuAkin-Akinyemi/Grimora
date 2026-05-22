@@ -12,7 +12,7 @@ import { MainView3D } from './three/views/mainView3D.js';
 import { HubView3D } from './three/views/hubView3D.js';
 import { Commander } from './app/commander.js';
 import { CoverTooltips } from './app/coverTooltips.js';
-import { IconButton3D } from './three/components/IconButton3D.js?v=40';
+import { IconButton3D } from './three/components/IconButton3D.js';
 
 /**
  * Initialize the Grimora application
